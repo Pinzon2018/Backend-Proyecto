@@ -1,3 +1,7 @@
+from sqlalchemy import Enum
+from marshmallow import fields
+from flask_sqlalchemy import SQLAlchemy
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy  # => ORM
@@ -8,7 +12,7 @@ from sqlalchemy import DateTime
 
 app = Flask(__name__)  # instancia de flask
 
-# configuración de la base de datos
+# configuración de la conexion de la base de datos y migracion
 USER_DB = 'root'
 PASS_DB = 'paula10'
 URL_DB = 'localhost'
@@ -432,3 +436,120 @@ class detalleVentaProductos(db.Model):
 
 
 
+class EnumADiccionario(fields.Field): #maneja campos personalizados
+    def _serialize(self, value, attr, obj, **kwargs): #metodo -valor, -atributo, -objeto, -argumentos
+        if value is None:  #evita serializar un valor nulo
+            return None
+        return{"llave": value.name, "valor": value.value}
+            
+
+
+class RolSchema(SQLAlchemyAutoSchema):  #1
+    
+    class Meta:
+        model = Rol
+        include_relationships = True
+        load_instance = True
+
+class EmpleadoSchema(SQLAlchemyAutoSchema):   #2
+    
+    rol = fields.Nested(RolSchema)
+
+    class Meta:
+        model = Empleado
+        include_relationships = True
+        load_instance = True
+
+class VentaSchema(SQLAlchemyAutoSchema):  #9
+    
+    Empleado = fields.Nested(EmpleadoSchema)
+   
+    class Meta:
+        model = Venta
+        include_relationships = True
+        load_instance = True
+
+
+class tablaDePagosSchema (SQLAlchemyAutoSchema): #4
+    
+    Venta = fields.Nested(VentaSchema)
+    
+    class Meta:
+        model = tablaDePagos
+        include_relationships = True
+        load_instance = True
+
+class empresasProveedorasSchema(SQLAlchemyAutoSchema): #4
+    
+    class Meta:
+        model = empresasProveedoras
+        include_relationships = True
+        load_instance = True
+
+class ProveedorSchema(SQLAlchemyAutoSchema): #3
+    
+    empresasProveedoras = fields.Nested(empresasProveedorasSchema) 
+
+    class Meta:
+        model = Proveedor
+        include_relationships = True
+        load_instance = True
+
+
+
+class ClienteSchema(SQLAlchemyAutoSchema):  #5
+    
+    class Meta:
+        model = Cliente
+        include_relationships = True
+        load_instance = True
+
+class CategoriaSchema(SQLAlchemyAutoSchema): #6
+    
+    class Meta:
+        model = Categoria
+        include_relationships = True
+        load_instance = True
+
+class SubcategoriaSchema(SQLAlchemyAutoSchema):  #7
+    
+    Categoria = fields.Nested(CategoriaSchema)
+
+    class Meta:
+        model = Subcategoria
+        include_relationships = True
+        load_instance = True
+
+class ProductoSchema(SQLAlchemyAutoSchema):  #8
+    
+    Proveedor = fields.Nested(ProveedorSchema)
+    Subcategoria = fields.Nested(SubcategoriaSchema)
+
+    class Meta:
+        model = Producto
+        include_relationships = True
+        load_instance = True
+
+
+
+
+class FacturaSchema(SQLAlchemyAutoSchema): #10
+    
+    tablaDePagos= fields.Nested(tablaDePagosSchema)
+
+    class Meta:
+        model = Factura
+        include_relationships = True
+        load_instance = True
+
+
+class detalleVentaProductosSchema(SQLAlchemyAutoSchema):  #11
+    
+    Venta = fields.Nested(VentaSchema)
+    Producto = fields.Nested(ProductoSchema)
+    Cliente = fields.Nested(ClienteSchema)
+
+    class Meta:
+        model = detalleVentaProductos
+        include_relationships = True
+        load_instance = True
