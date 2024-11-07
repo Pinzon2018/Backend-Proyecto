@@ -357,7 +357,7 @@ class Factura(db.Model):
     impuestosFactura = db.Column (db.Numeric(19,0))
     tablaDePagos = db.Column (db.Integer, db.ForeignKey('tablaDePagos.id'))
     
-    TablaDePagos = db.relationship("tablaDePagos", back_populates='Factura')
+    
     
     def __init__(self, id, fechaGeneracionFactura, impuestosFactura, tablaDePagos):
         self.id= id
