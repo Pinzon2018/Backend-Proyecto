@@ -1,0 +1,1 @@
+from vista_proveedor import *
