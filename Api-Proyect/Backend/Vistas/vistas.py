@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from ...modelos import db, Subcategoria, SubcategoriaSchema
+from ..Modelos import db, Subcategoria, SubcategoriaSchema
 from flask import request
 
 
