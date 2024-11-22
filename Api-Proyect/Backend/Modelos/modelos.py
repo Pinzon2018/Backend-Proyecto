@@ -8,27 +8,19 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 db = SQLAlchemy()
 
 class Rol(db.Model):
-    
-    
     Id_Rol = db.Column(db.Integer, primary_key=True)
-    Nombre = db.Column(db.String(180))
-    
-    Usuario= db.relationship('Usuario', back_populates="Rol")
+    Nombre = db.Column(db.String(180))      
+    usuarios= db.relationship("Usuario", back_populates="rol_rl")
 
-
-class Proveedor(db.Model):
-    
+class Proveedor(db.Model): 
     Id_Proveedor = db.Column(db.Integer, primary_key=True)
     Nombre_Prov = db.Column(db.String(180))
     Telefono_Prov = db.Column(db.String(15))  
     Direccion_Prov = db.Column(db.String(50))
+    producto= db.relationship("Producto", back_populates="proveedor")
+    fecha_Registro_Prod= db.relationship("Fecha_Registro_Prod", back_populates="proveedor")
 
-    Fecha_Registro_Prod= db.relationship('Fecha_Registro_Prod', back_populates="Proveedor")
-    Producto= db.relationship('Producto', back_populates="Proveedor")
-
-
-class Usuario(db.Model):
-    
+class Usuario(db.Model):    
     Id_Usuario = db.Column(db.Integer, primary_key=True)
     Nombre_Usu = db.Column(db.String(250))
     Contraseña_Usu = db.Column(db.String(255))
@@ -36,97 +28,80 @@ class Usuario(db.Model):
     Email_Usu = db.Column(db.String(250))
     Telefono_Usu = db.Column(db.String(15))  # Cambiado de Integer a String para telefonos
     Fecha_Contrato_Inicio = db.Column(db.DateTime)
-    FK_Id_Rol = db.Column(db.Integer, db.ForeignKey('Rol.Id_Rol'))
-    
-    Rol = db.relationship('Rol', back_populates="Usuario")
-    Venta_Empleado = db.relationship('Venta', back_populates='Empleado')
+    rol = db.Column(db.Integer, db.ForeignKey('rol.Id_Rol'))
+    rol_rl = db.relationship("Rol", back_populates="usuarios")
+    venta_Usuario = db.relationship("Venta", back_populates="usuario")
 
-class Categoria(db.Model):
-    
+class Categoria(db.Model):   
     Id_Categoria = db.Column(db.Integer, primary_key=True)
     Nombre_Cat = db.Column(db.String(80))
     Descripcion_Cat = db.Column(db.String(150))
-    
-    Subcategoria_Categoria = db.relationship('Subcategoria', back_populates="Categoria")
+    subcategorias = db.relationship("Subcategoria", back_populates="categoria_rl")
 
 class Subcategoria(db.Model):
-
     Id_Subcategoria = db.Column(db.Integer, primary_key=True)
     Nombre_Subcategoria = db.Column(db.String(250))
     Descripcion_Subcategoria = db.Column(db.String(250))
-    FK_Id_Categoria = db.Column(db.Integer, db.ForeignKey("Categoria.Id_Categoria"))
-
-    Categoria = db.relationship('Categoria', back_populates="Subcategoria_Categoria")
-    Producto = db.relationship('Producto', back_populates='Subcategoria')
+    categoria = db.Column(db.Integer, db.ForeignKey('categoria.Id_Categoria'))
+    categoria_rl = db.relationship("Categoria", back_populates="subcategorias")
+    productos = db.relationship("Producto", back_populates="subcategoria")
 
     
-class Producto(db.Model):
-    
+class Producto(db.Model):  
     Id_Producto = db.Column(db.Integer, primary_key=True, nullable=False)
     Nombre_Prod = db.Column(db.String(100))
     Medida_Prod = db.Column(db.Integer)
     Unidad_Medida_Prod = db.Column(db.String(80))
-    Precio_Bruto_Prod = db.Column(db.Float(19,0))
-    Precio_Neto_Unidad_Prod = db.Column(db.Float(19,2))
-    Iva_Prod = db.Column(db.Float(3,2))
-    Porcentaje_Ganancia = db.Column(db.Float(3,2))
+    Precio_Bruto_Prod = db.Column(db.Float)
+    Precio_Neto_Unidad_Prod = db.Column(db.Float)
+    Iva_Prod = db.Column(db.Float)  
+    Porcentaje_Ganancia = db.Column(db.Float)
     Unidades_Totales_Prod = db.Column(db.Integer)
     Estado_Prod = db.Column(db.String(50))
     Marca_Prod = db.Column(db.String(60))
-    FK_Id_Proveedor = db.Column(db.Integer, db.ForeignKey("Proveedor.Id_Proveedor"))
-    FK_Id_Subcategoria = db.Column(db.Integer, db.ForeignKey("Subcategoria.Id_Subcategoria"))
-    
-    Proveedor = db.relationship('Proveedor', back_populates='Producto')
-    Subcategoria = db.relationship('Subcategoria', back_populates='Producto')
-    Fecha_Registro_Prod= db.relationship('Fecha_Registro_Prod', back_populates="Producto")
-    Detalle_Venta= db.relationship('Detalle_Venta', back_populates = "Producto")
+    FK_Id_Proveedor = db.Column(db.Integer, db.ForeignKey("proveedor.Id_Proveedor"))
+    FK_Id_Subcategoria = db.Column(db.Integer, db.ForeignKey("subcategoria.Id_Subcategoria"))
+    proveedor = db.relationship("Proveedor", back_populates="producto")
+    subcategoria = db.relationship("Subcategoria", back_populates="productos")
+    fecha_Registro_Prod= db.relationship("Fecha_Registro_Prod", back_populates="producto")
+    detalle_Venta= db.relationship("Detalle_Venta", back_populates = "producto")
 
 class Venta(db.Model):
-    
-
     Id_Venta = db.Column(db.Integer, primary_key=True)
     Fecha_Venta = db.Column(db.DateTime)
     Total_Venta = db.Column(db.Float)
     Forma_Pago_Fact = db.Column(db.String(50))
-    FK_Id_Usuario = db.Column(db.Integer, db.ForeignKey("Usuario.Id_Usuario"))
- 
-    Usuario = db.relationship('Usuario', back_populates='Venta_Usuario')
-    Detalle_Venta= db.relationship('Detalle_Venta', back_populates = "Venta")
+    FK_Id_Usuario = db.Column(db.Integer, db.ForeignKey("usuario.Id_Usuario"))
+    usuario = db.relationship("Usuario", back_populates="venta_Usuario")
+    detalle_Venta= db.relationship("Detalle_Venta", back_populates = "venta")
 
 class Factura(db.Model):
-    
-
     Id_Factura = db.Column(db.Integer, primary_key=True)
     Fecha_Generacion_Fact = db.Column(db.DateTime)
-    Impuestos_Fact= db.Column(db.Float(5,2))
-    
-    Detalle_Venta= db.relationship('Detalle_Venta', back_populates = "Factura")
+    Impuestos_Fact= db.Column(db.Float)
+    detalle_Venta= db.relationship("Detalle_Venta", back_populates = "factura")
 
 class Detalle_Venta(db.Model):
-
     Id_Detalle_Venta = db. Column(db.Integer, primary_key=True)
     Cantidad = db.Column(db.Integer)
     Precio_Unidad = db.Column(db.Float)
-    FK_Id_Venta = db.Column(db.Integer, db.ForeignKey("Venta.Id_Venta"))
-    FK_Id_Producto = db.Column(db.Integer, db.ForeignKey("Producto.Id_Producto"))
-    FK_Id_Factura = db.Column(db.Integer, db.ForeignKey("Factura.Id_Factura"))
+    FK_Id_Venta = db.Column(db.Integer, db.ForeignKey("venta.Id_Venta"))
+    FK_Id_Producto = db.Column(db.Integer, db.ForeignKey("producto.Id_Producto"))
+    FK_Id_Factura = db.Column(db.Integer, db.ForeignKey("factura.Id_Factura"))
     
-    Factura= db.relationship('Factura', back_populates = "Detalle_Venta")
-    Producto= db.relationship('Producto', back_populates = "Detalle_Venta")
-    Venta= db.relationship('Venta', back_populates = "Detalle_Venta")
+    factura= db.relationship("Factura", back_populates = "detalle_Venta")
+    producto= db.relationship("Producto", back_populates = "detalle_Venta")
+    venta= db.relationship("Venta", back_populates = "detalle_Venta")
 
 
 class Fecha_Registro_Prod(db.Model):
-    
     Id_Fecha_Registro = db.Column(db.Integer, primary_key=True, nullable=False)
     Fecha_Registro = db.Column(db.Date)
     Cantidad = db.Column(db.Integer)
-    FK_Id_Proveedor = db.Column(db.Integer, db.ForeignKey("Proveedor.Id_Proveedor"))
-    FK_Id_Producto = db.Column(db.Integer, db.ForeignKey("Producto.Id_Producto"))
-    
-    
-    Producto = db.relationship('Producto', back_populates="Fecha_Registro_Prod")
-    Proveedor= db.relationship('Proveedor', back_populates="Fecha_Registro_Prod")
+    FK_Id_Proveedor = db.Column(db.Integer, db.ForeignKey("proveedor.Id_Proveedor"))
+    FK_Id_Producto = db.Column(db.Integer, db.ForeignKey("producto.Id_Producto"))
+    producto = db.relationship("Producto", back_populates="fecha_Registro_Prod")
+    proveedor= db.relationship("Proveedor", back_populates="fecha_Registro_Prod")
 
 
     
