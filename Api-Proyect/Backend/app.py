@@ -1,4 +1,5 @@
 from Backend import create_app
+from flask_migrate import Migrate
 from .Modelos import db
 from flask_restful import Api
 from .Vistas.vista_subcategoria import VistaSubcategoria
@@ -12,3 +13,6 @@ db.create_all()
 api = Api(app)
 
 api.add_resource(VistaSubcategoria, '/subcategorias')
+
+migrate = Migrate()
+migrate.init_app(app, db)
