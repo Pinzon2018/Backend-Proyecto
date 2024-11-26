@@ -9,7 +9,7 @@ class VistaRol(Resource):
         return [rol_schema.dump(Rol) for Rol in Rol.query.all()]
     
     def post(self):
-        nuevo_rol = Rol(nombre_rol = request.json['nombre_rol'])
+        nuevo_rol = Rol(Nombre = request.json['Nombre'])
         db.session.add(nuevo_rol)
         db.session.commit()
         return rol_schema.dump(nuevo_rol)
