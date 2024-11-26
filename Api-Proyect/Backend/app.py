@@ -2,7 +2,7 @@ from Backend import create_app
 from flask_migrate import Migrate
 from .Modelos import db
 from flask_restful import Api
-from .Vistas.vista_subcategoria import VistaSubcategoria
+from .Vistas import VistaSubcategoria
 
 app = create_app('default')
 app_context = app.app_context()
