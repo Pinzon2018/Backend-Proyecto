@@ -12,7 +12,7 @@ db.create_all()
 
 api = Api(app)
 
-api.add_resource(VistaSubcategoria, '/subcategorias')
+api.add_resource(VistaSubcategoria, '/subcategorias', '/subcategorias/<int:Id_Subcategoria>')
 
 migrate = Migrate()
 migrate.init_app(app, db)
