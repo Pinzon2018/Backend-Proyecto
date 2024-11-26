@@ -2,6 +2,7 @@
 from marshmallow import fields
 from flask_sqlalchemy import SQLAlchemy
 import enum
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
@@ -23,7 +24,7 @@ class Proveedor(db.Model):
 class Usuario(db.Model):    
     Id_Usuario = db.Column(db.Integer, primary_key=True)
     Nombre_Usu = db.Column(db.String(250))
-    Contraseña_Usu = db.Column(db.String(255))
+    Contraseña_hash = db.Column(db.String(255))
     Cedula_Usu = db.Column(db.String(20))
     Email_Usu = db.Column(db.String(250))
     Telefono_Usu = db.Column(db.String(15))  # Cambiado de Integer a String para telefonos
@@ -31,6 +32,16 @@ class Usuario(db.Model):
     rol = db.Column(db.Integer, db.ForeignKey('rol.Id_Rol'))
     rol_rl = db.relationship("Rol", back_populates="usuarios")
     venta_Usuario = db.relationship("Venta", back_populates="usuario")
+    @property
+    def contraseña(self):
+        raise AttributeError("La contraseña no es un atributo legible")
+    
+    @contraseña.setter
+    def contraseña(self, password):
+        self.Contraseña_hash = generate_password_hash(password)
+    
+    def verificar_contraseña(self, password):
+        return check_password_hash(self.Contraseña_hash, password)
 
 class Categoria(db.Model):   
     Id_Categoria = db.Column(db.Integer, primary_key=True)
