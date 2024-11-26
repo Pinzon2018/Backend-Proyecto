@@ -11,9 +11,9 @@ class VistaProveedor(Resource):
         return [proveedor_schema.dump(Proveedor) for Proveedor in Proveedor.query.all()]
 
     def post(self):
-        nuevo_proveedor = Proveedor(nombre_proveedor=request.json['nombre_proveedor'],
-                                    telefono_proveedor = request.json['telefono_proveedor'],
-                                    direccion_proveedor = request.json['direccion_proveedor'])
+        nuevo_proveedor = Proveedor(Nombre_Prov=request.json['Nombre_Prov'],
+                                    Telefono_Prov = request.json['Telefono_Prov'],
+                                    Direccion_Prov = request.json['Direccion_Prov'])
         db.session.add(nuevo_proveedor)
         db.session.commit()
         return proveedor_schema.dump(nuevo_proveedor)
@@ -23,9 +23,9 @@ class VistaProveedor(Resource):
         if not proveedor:
             return 'Proveedor no encontrado', 404
 
-        proveedor.nombre_proveedor = request.json.get('nombre_proveedor', proveedor.nombre_proveedor)
-        proveedor.telefono_proveedor = request.json.get('telefono_proveedor', proveedor.telefono_proveedor)
-        proveedor.direccion_proveedor = request.json.get('direccion_proveedor', proveedor.direccion_proveedor)
+        proveedor.Nombre_Prov = request.json.get('Nombre_Prov', proveedor.Nombre_Prov)
+        proveedor.Telefono_Prov = request.json.get('Telefono_Prov', proveedor.Telefono_Prov)
+        proveedor.Direccion_Prov = request.json.get('Direccion_Prov', proveedor.Direccion_Prov)
 
         db.session.commit()
         return proveedor_schema.dump(proveedor), 200
