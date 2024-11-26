@@ -1,11 +1,8 @@
 from flask_restful import Resource
-from flask import Flask, request
+from flask import request
 from flaskr.modelos.modeloDB import db, Categoria, CategoriaSchema
 from ..modelos import db, Categoria
 
-app = Flask(__name__)
-
-# Instaciamos el esquema que vamos a utilizar
 categoria_Schema = CategoriaSchema()
 
 # Procedemos a crear la vista de canciones, es decir una clase que tendra los metodos
