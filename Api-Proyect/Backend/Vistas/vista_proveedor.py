@@ -18,8 +18,8 @@ class VistaProveedor(Resource):
         db.session.commit()
         return proveedor_schema.dump(nuevo_proveedor)
 
-    def put(self, id):
-        proveedor = Proveedor.query.get(id)
+    def put(self, Id_Proveedor):
+        proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
             return 'Proveedor no encontrado', 404
 
@@ -30,8 +30,8 @@ class VistaProveedor(Resource):
         db.session.commit()
         return proveedor_schema.dump(proveedor), 200
     
-    def delete(self, id):
-        proveedor = Proveedor.query.get(id)
+    def delete(self, Id_Proveedor):
+        proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
             return 'Proveedor no encontrado', 404
         
