@@ -13,6 +13,7 @@ db.create_all()
 api = Api(app)
 
 api.add_resource(VistaProveedor, '/proveedores', '/proveedores/<int:Id_Proveedor>')
+api.add_resource(VistaRol, '/roles')
 api.add_resource(VistaSubcategoria, '/subcategorias', '/subcategorias/<int:Id_Subcategoria>')
 
 migrate = Migrate()
