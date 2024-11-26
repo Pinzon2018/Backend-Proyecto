@@ -12,22 +12,22 @@ class VistaSubcategoria(Resource):
     def post(self):
         insercion_subcategoria  = Subcategoria(Nombre_Subcategoria = request.json['Nombre_Subcategoria'],
                                                Descripcion_Subcategoria = request.json['Descripcion_Subcategoria'],
-                                               FK_Id_Categoria = request.json['FK_Id_Categoria'])
+                                               categoria = request.json['categoria'])
         db.session.add(insercion_subcategoria)
         db.session.commit()
         return Subcategoria_schema.dump(insercion_subcategoria), 201
     
     def put (self, Id_Subcategoria):
-        Subcategoria = Subcategoria.query.get_or_404(id)
+        Subcategoria = Subcategoria.query.get_or_404(Id_Subcategoria)
         Subcategoria.Id_Subcategoria = request.json.get('Id_Subcategoria', Subcategoria.Id_Subcategoria)
         Subcategoria.Descripcion_Subcategoria = request.json.get('Descripcion_Subcategoria', Subcategoria.Descripcion_Subcategoria)
-        Subcategoria.FK_Id_Categoria = request.json.get('FK_Id_Categoria', Subcategoria.FK_Id_Categoria)
+        Subcategoria.categoria = request.json.get('categoria', Subcategoria.categoria)
         db.session.commit()
         return Subcategoria_schema.dump(Subcategoria)
     
     def delete (self, Id_Subcategoria):
-        Subcategoria = Subcategoria.query.get_or_404(id)
+        Subcategoria = Subcategoria.query.get_or_404(Id_Subcategoria)
         db.session.delete(Subcategoria)
         db.session.commit()
-        return Subcategoria
+        return 'Subcategoria eliminada correctamente', 204
     
