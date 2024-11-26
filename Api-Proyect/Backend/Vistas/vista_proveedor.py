@@ -18,9 +18,6 @@ class VistaProveedor(Resource):
         db.session.commit()
         return proveedor_schema.dump(nuevo_proveedor)
 
-#Vista para editar y eliminar Proveedores
-    
-class VistaProveedored(Resource):
     def put(self, id):
         proveedor = Proveedor.query.get(id)
         if not proveedor:
