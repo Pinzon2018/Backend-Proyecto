@@ -1,0 +1,76 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
+from flask_restful import Resource
+from flask import request
+from datetime import datetime
+from Backend.Modelos.modelos import db, Usuario, UsuarioSchema
+from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import validators  # Para validar URLs
+
+cloudinary.config(
+    cloud_name="docnct4ym",
+    # ... otras configuraciones
+)
+
+usuario_schema = UsuarioSchema()
+
+def subir_imagen_perfil_a_cloudinary(imagen):
+    """
+    Sube una imagen de perfil a Cloudinary y devuelve la URL.
+    """
+    try:
+        resultado = upload(imagen.read(), folder="perfiles_usuarios", 
+                          public_id=f"usuario_{get_jwt_identity()}", 
+                          overwrite=True,
+                          crop="fill", 
+                          width=200, 
+                          height=200)
+        return resultado["secure_url"]
+    except Exception as e:
+        return {"error": str(e)}
+
+def validar_imagen(imagen):
+    # Validar tipo de archivo, tamaño y formato
+    if not validators.url(imagen.filename):
+        return False
+    if imagen.content_type not in ['image/jpeg', 'image/png']:
+        return False
+    if imagen.content_length > 1024 * 1024 * 2:  # 2MB
+        return False
+    return True
+
+class VistaUsuario(Resource):
+    @jwt_required()
+    def post(self):
+        # ... (código existente)
+
+        if 'Foto_Perfil_Usu' in request.files:
+            imagen = request.files['Foto_Perfil_Usu']
+            if validar_imagen(imagen):
+                imagen_url = subir_imagen_perfil_a_cloudinary(imagen)
+                nuevo_usuario.Foto_Perfil_Usu = imagen_url
+            else:
+                return {"error": "Formato de imagen no válido o tamaño excedido"}, 400
+
+        # ... (resto del código)
+
+    @jwt_required()
+    def put(self, Id_Usuario):
+        # ... (código existente)
+
+        if 'Foto_Perfil_Usu' in request.files:
+            imagen = request.files['Foto_Perfil_Usu']
+            if validar_imagen(imagen):
+                imagen_url = subir_imagen_perfil_a_cloudinary(imagen)
+                usuario.Foto_Perfil_Usu = imagen_url
+            else:
+                return {"error": "Formato de imagen no válido o tamaño excedido"}, 400
+
+    def delete(self, Id_Usuario):
+        usuario = Usuario.query.get_or_404(Id_Usuario) # Obtenemos el usuario
+        db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
+        db.session.commit() # se guardan los datos
+        return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
