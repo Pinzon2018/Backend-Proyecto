@@ -41,7 +41,7 @@ class VistaUsuario(Resource):
     def put (self, Id_Usuario):
         usuario = Usuario.query.get_or_404(Id_Usuario)
         usuario.Nombre_Usu = request.json.get('Nombre_Usu', usuario.Nombre_Usu)
-        usuario.Contraseña_Usu = request.json.get('Contraseña_Usu', usuario.Contraseña_Usu)
+        usuario.Contraseña_hash = request.json.get('Contraseña_hash', usuario.Contraseña_hash)
         usuario.Email_Usu = request.json.get('Email_Usu', usuario.Email_Usu)
         usuario.Telefono_Usu = request.json.get('Telefono_Usu', usuario.Telefono_Usu)
         if 'Fecha_Contrato_Inicio' in request.json:
@@ -58,6 +58,16 @@ class VistaUsuario(Resource):
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
         db.session.commit() # se guardan los datos
         return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
- 
 
-
+class VistaLogIn(Resource):
+    def post(self):
+        Nombre_Usu = request.json['Nombre_Usu']
+        Contraseña_hash = request.json['Contraseña_hash']
+        usuario = Usuario.query.filter_by(nombre=Nombre_Usu).first()
+        access_token = create_access_token(identity={"id": usuario.Id_Usuario, "rol": usuario.rol})
+        if usuario and usuario.verificar_contraseña(Contraseña_hash):
+            return {"access_token": access_token, "mensaje": "Inicio de sesión exitoso"}, 200
+        else:
+            return {'mensaje': 'Nombre de usuario o contraseña incorrectos'}, 401
+        
+        
