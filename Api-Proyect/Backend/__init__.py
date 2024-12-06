@@ -10,8 +10,11 @@ def create_app(config_name):
     )
     app.config['SECRET_KEY'] = 'sergio9123541'
     app.config['JWT_SECRET_KEY'] = 'pinzon1234133'
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']  
+    app.config['JWT_HEADER_NAME'] = 'Authorization'
+    app.config['JWT_HEADER_TYPE'] = 'Bearer'
     USER_DB = 'root'
-    PASS_DB = '1234'
+    PASS_DB = ''
     URL_DB = 'localhost'
     NAME_DB = 'bella_actual_connection'
     FULL_URL_DB = f'mysql+pymysql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}'

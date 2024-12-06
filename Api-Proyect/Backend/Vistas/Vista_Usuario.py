@@ -3,7 +3,7 @@ from flask import request
 from datetime import datetime
 from ..Modelos import db, Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required, create_access_token
-import cloudinary
+import cloudinary.uploader
 
 usuario_Schema = UsuarioSchema()
 
@@ -58,16 +58,18 @@ class VistaUsuario(Resource):
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
         db.session.commit() # se guardan los datos
         return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
+    
 
 class VistaLogIn(Resource):
     def post(self):
-        Nombre_Usu = request.json['Nombre_Usu']
-        Contraseña_hash = request.json['Contraseña_hash']
-        usuario = Usuario.query.filter_by(nombre=Nombre_Usu).first()
-        access_token = create_access_token(identity={"id": usuario.Id_Usuario, "rol": usuario.rol})
+        data = request.get_json()
+        if not data or 'Nombre_Usu' not in data or 'Contraseña_hash' not in data:
+            return {'mensaje': 'Datos incompletos'}, 400
+        Nombre_Usu = data['Nombre_Usu']
+        Contraseña_hash = data['Contraseña_hash']
+        usuario = Usuario.query.filter_by(Nombre_Usu=Nombre_Usu).first()
         if usuario and usuario.verificar_contraseña(Contraseña_hash):
+            access_token = create_access_token(identity={"Id_Usuario": usuario.Id_Usuario, "rol": usuario.rol})
             return {"access_token": access_token, "mensaje": "Inicio de sesión exitoso"}, 200
         else:
             return {'mensaje': 'Nombre de usuario o contraseña incorrectos'}, 401
-        
-        

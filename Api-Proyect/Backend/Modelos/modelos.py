@@ -40,7 +40,7 @@ class Usuario(db.Model):
     @contraseña.setter
     def contraseña(self, password):
         self.Contraseña_hash = generate_password_hash(password)
-    
+        
     def verificar_contraseña(self, password):
         return check_password_hash(self.Contraseña_hash, password)
 

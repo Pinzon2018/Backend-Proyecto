@@ -3,12 +3,16 @@ from flask_migrate import Migrate
 from .Modelos import db
 from flask_restful import Api
 from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogIn
+from flask_cors import CORS
+from flask_jwt_extended import jwt_required, JWTManager
 
 app = create_app('default')
 app_context = app.app_context()
 app_context.push()
 db.init_app(app)
 db.create_all()
+
+CORS(app)
 
 api = Api(app)
 
@@ -22,3 +26,5 @@ api.add_resource(VistaLogIn, '/login')
 
 migrate = Migrate()
 migrate.init_app(app, db)
+
+jwt = JWTManager(app)
