@@ -1,6 +1,6 @@
 from flask_restful import Resource
-from flask import request, jsonify
-from ..modelos import db, Producto, ProductoSchema
+from flask import request
+from ..Modelos import db, Producto, ProductoSchema
 
 producto_schema = ProductoSchema()
 

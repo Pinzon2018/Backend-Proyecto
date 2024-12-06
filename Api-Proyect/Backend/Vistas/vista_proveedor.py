@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from ..modelos import db, Proveedor, ProveedorSchema
+from ..Modelos import db, Proveedor, ProveedorSchema
 
 proveedor_schema = ProveedorSchema()
 

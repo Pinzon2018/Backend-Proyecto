@@ -1,7 +1,13 @@
 from flask import Flask
+import cloudinary
 
 def create_app(config_name):
     app = Flask(__name__)
+    cloudinary.config(
+        cloud_name='ddvao0cuu',
+        api_key='416747191371556',
+        api_secret='-brPxdfIzrQ6Tjhz0r4SD2lyuww'
+    )
     app.config['SECRET_KEY'] = 'sergio9123541'
     app.config['JWT_SECRET_KEY'] = 'pinzon1234133'
     USER_DB = 'root'

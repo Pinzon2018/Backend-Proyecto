@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from flaskr.modelos.modeloDB import db, Categoria, CategoriaSchema
-from ..modelos import db, Categoria
+from ..Modelos import db, Categoria, CategoriaSchema
 
 categoria_Schema = CategoriaSchema()
 

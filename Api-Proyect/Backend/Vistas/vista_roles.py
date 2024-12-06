@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from ..modelos import db, Rol, RolSchema
+from ..Modelos import db, Rol, RolSchema
 
 rol_schema = RolSchema()
 

@@ -1,10 +1,9 @@
 from flask_restful import Resource
 from flask import request
 from datetime import datetime
-from flaskr.modelos.modeloDB import db, Usuario, UsuarioSchema
-from ..modelos import db, Usuario
-from sqlalchemy.exc import IntergrityError
+from ..Modelos import db, Usuario, UsuarioSchema
 from flask_jwt_extended import jwt_required, create_access_token
+import cloudinary
 
 usuario_Schema = UsuarioSchema()
 
@@ -14,18 +13,27 @@ class VistaUsuario(Resource):
         return [usuario_Schema.dump(Usuario) for Usuario in Usuario.query.all()]
 
     def post(self):
-        fecha = request.json['Fecha_Contrato_Inicio']
+        fecha = request.form['Fecha_Contrato_Inicio']
         Fecha_Contrato_Inicio_r = datetime.strptime(fecha, "%Y-%m-%d").date()
+        imagen_usu = None
+        if 'imagen_usu' in request.files:  
+            archivo_imagen = request.files['imagen_usu']
+            if archivo_imagen:
+                try:
+                    result = cloudinary.uploader.upload(archivo_imagen)
+                    imagen_usu = result['secure_url'] 
+                except Exception as e:
+                    return {'error': 'Error al subir la imagen a Cloudinary', 'details': str(e)}, 400
         nuevo_usuario = Usuario(
-                                Nombre_Usu = request.json['Nombre_Usu'],\
-                                Contraseña_Usu = request.json['Contraseña_Usu'],\
-                                Cedula_Usu = request.json['Cedula_Usu'],\
-                                Email_Usu = request.json['Email_Usu'],\
-                                Telefono_Usu = request.json['Telefono_Usu'],\
-                                Fecha_Contrato_Inicio = Fecha_Contrato_Inicio_r,
-                                rol = request.json['rol']
-                                )
-        
+            Nombre_Usu=request.form['Nombre_Usu'],
+            Contraseña_hash=request.form['Contraseña_hash'],
+            Cedula_Usu=request.form['Cedula_Usu'],
+            Email_Usu=request.form['Email_Usu'],
+            Telefono_Usu=request.form['Telefono_Usu'],
+            Fecha_Contrato_Inicio=Fecha_Contrato_Inicio_r,
+            rol=request.form['rol'],
+            imagen_usu=imagen_usu  
+        )
         db.session.add(nuevo_usuario)
         db.session.commit()
         return usuario_Schema.dump(nuevo_usuario), 201 #retorna la nueva cancion en formato json

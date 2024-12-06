@@ -1,6 +1,5 @@
 from flask_restful import Resource
-from flask import request, jsonify
-from ..modelos import db, Venta, VentaSchema
+from ..Modelos import db, Venta, VentaSchema
 
 VentaSchema = VentaSchema()
 

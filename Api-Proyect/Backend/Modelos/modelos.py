@@ -27,7 +27,8 @@ class Usuario(db.Model):
     Contraseña_hash = db.Column(db.String(255))
     Cedula_Usu = db.Column(db.String(20))
     Email_Usu = db.Column(db.String(250))
-    Telefono_Usu = db.Column(db.String(15))  # Cambiado de Integer a String para telefonos
+    Telefono_Usu = db.Column(db.String(15))
+    imagen_usu = db.Column(db.String(255))
     Fecha_Contrato_Inicio = db.Column(db.DateTime)
     rol = db.Column(db.Integer, db.ForeignKey('rol.Id_Rol'))
     rol_rl = db.relationship("Rol", back_populates="usuarios")
