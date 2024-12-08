@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request
 from datetime import datetime
 from ..Modelos import db, Usuario, UsuarioSchema
-from flask_jwt_extended import jwt_required, create_access_token
+from werkzeug.security import generate_password_hash
 import cloudinary.uploader
 
 usuario_Schema = UsuarioSchema()
@@ -24,9 +24,15 @@ class VistaUsuario(Resource):
                     imagen_usu = result['secure_url'] 
                 except Exception as e:
                     return {'error': 'Error al subir la imagen a Cloudinary', 'details': str(e)}, 400
+                
+        username = request.form.get("Nombre_Usu")
+        password = request.form.get("Contraseña_hash")
+
+        hashed_password = generate_password_hash(password)
+
         nuevo_usuario = Usuario(
-            Nombre_Usu=request.form['Nombre_Usu'],
-            Contraseña_hash=request.form['Contraseña_hash'],
+            Nombre_Usu=username,
+            Contraseña_hash=hashed_password,
             Cedula_Usu=request.form['Cedula_Usu'],
             Email_Usu=request.form['Email_Usu'],
             Telefono_Usu=request.form['Telefono_Usu'],
@@ -34,6 +40,8 @@ class VistaUsuario(Resource):
             rol=request.form['rol'],
             imagen_usu=imagen_usu  
         )
+
+
         db.session.add(nuevo_usuario)
         db.session.commit()
         return usuario_Schema.dump(nuevo_usuario), 201 #retorna la nueva cancion en formato json
@@ -58,18 +66,3 @@ class VistaUsuario(Resource):
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
         db.session.commit() # se guardan los datos
         return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
-    
-
-class VistaLogIn(Resource):
-    def post(self):
-        data = request.get_json()
-        if not data or 'Nombre_Usu' not in data or 'Contraseña_hash' not in data:
-            return {'mensaje': 'Datos incompletos'}, 400
-        Nombre_Usu = data['Nombre_Usu']
-        Contraseña_hash = data['Contraseña_hash']
-        usuario = Usuario.query.filter_by(Nombre_Usu=Nombre_Usu).first()
-        if usuario and usuario.verificar_contraseña(Contraseña_hash):
-            access_token = create_access_token(identity={"Id_Usuario": usuario.Id_Usuario, "rol": usuario.rol})
-            return {"access_token": access_token, "mensaje": "Inicio de sesión exitoso"}, 200
-        else:
-            return {'mensaje': 'Nombre de usuario o contraseña incorrectos'}, 401

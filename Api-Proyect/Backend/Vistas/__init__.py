@@ -5,3 +5,4 @@ from .Vista_Categoria import *
 from .Vista_Usuario import *
 from .vista_productos import *
 from .vista_Venta import *
+from .vista_login import *
