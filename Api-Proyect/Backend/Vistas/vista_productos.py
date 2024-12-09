@@ -1,13 +1,16 @@
 from flask_restful import Resource
 from flask import request
 from ..Modelos import db, Producto, ProductoSchema
+from flask_jwt_extended import jwt_required
 
 producto_schema = ProductoSchema()
 
 class VistaProducto(Resource):
+    @jwt_required()
     def get(self): 
         return [producto_schema.dump(Producto) for Producto in Producto.query.all()]
 
+    @jwt_required()
     def post(self):
         nuevo_producto = Producto(Nombre_Prod = request.json['Nombre_Prod'],
                                   Medida_Prod = request.json['Medida_Prod'],
@@ -25,6 +28,7 @@ class VistaProducto(Resource):
         db.session.commit()
         return producto_schema.dump(nuevo_producto)
     
+    @jwt_required()
     def put(self, Id_Producto):
         producto = Producto.query.get(Id_Producto)
         if not producto:
@@ -46,6 +50,7 @@ class VistaProducto(Resource):
         db.session.commit()
         return producto_schema.dump(producto), 202
 
+    @jwt_required()
     def delete(self, Id_Producto):
         producto = Producto.query.get(Id_Producto)
         if not producto:

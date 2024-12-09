@@ -1,15 +1,18 @@
 from flask import request
 from flask_restful import Resource
 from ..Modelos import db, Proveedor, ProveedorSchema
+from flask_jwt_extended import jwt_required
 
 proveedor_schema = ProveedorSchema()
 
 #Vista para ver y agregar Proveedores
 
 class VistaProveedor(Resource):
+    @jwt_required()
     def get(self):
         return [proveedor_schema.dump(Proveedor) for Proveedor in Proveedor.query.all()]
 
+    @jwt_required()
     def post(self):
         nuevo_proveedor = Proveedor(Nombre_Prov=request.json['Nombre_Prov'],
                                     Telefono_Prov = request.json['Telefono_Prov'],
@@ -18,6 +21,7 @@ class VistaProveedor(Resource):
         db.session.commit()
         return proveedor_schema.dump(nuevo_proveedor)
 
+    @jwt_required()
     def put(self, Id_Proveedor):
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
@@ -30,6 +34,7 @@ class VistaProveedor(Resource):
         db.session.commit()
         return proveedor_schema.dump(proveedor), 200
     
+    @jwt_required()
     def delete(self, Id_Proveedor):
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:

@@ -1,14 +1,17 @@
 from flask_restful import Resource
 from ..Modelos import db, Subcategoria, SubcategoriaSchema
 from flask import request
+from flask_jwt_extended import jwt_required
 
 
 Subcategoria_schema = SubcategoriaSchema()
 
 class VistaSubcategoria(Resource):
+    @jwt_required()
     def get(self):
         return  [Subcategoria_schema.dump(Subcategoria) for Subcategoria in Subcategoria.query.all()]
     
+    @jwt_required()    
     def post(self):
         insercion_subcategoria  = Subcategoria(Nombre_Subcategoria = request.json['Nombre_Subcategoria'],
                                                Descripcion_Subcategoria = request.json['Descripcion_Subcategoria'],
@@ -17,6 +20,7 @@ class VistaSubcategoria(Resource):
         db.session.commit()
         return Subcategoria_schema.dump(insercion_subcategoria), 201
     
+    @jwt_required()
     def put (self, Id_Subcategoria):
         Subcategoria = Subcategoria.query.get_or_404(Id_Subcategoria)
         Subcategoria.Id_Subcategoria = request.json.get('Id_Subcategoria', Subcategoria.Id_Subcategoria)
@@ -25,6 +29,7 @@ class VistaSubcategoria(Resource):
         db.session.commit()
         return Subcategoria_schema.dump(Subcategoria)
     
+    @jwt_required()
     def delete (self, Id_Subcategoria):
         Subcategoria = Subcategoria.query.get_or_404(Id_Subcategoria)
         db.session.delete(Subcategoria)

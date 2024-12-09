@@ -4,14 +4,17 @@ from datetime import datetime
 from ..Modelos import db, Usuario, UsuarioSchema
 from werkzeug.security import generate_password_hash
 import cloudinary.uploader
+from flask_jwt_extended import jwt_required
 
 usuario_Schema = UsuarioSchema()
 
 # Procedemos a crear la vista de usuario, es decir una clase que tendra los metodos
 class VistaUsuario(Resource):
+    @jwt_required()
     def get(self):
         return [usuario_Schema.dump(Usuario) for Usuario in Usuario.query.all()]
 
+    @jwt_required()
     def post(self):
         fecha = request.form['Fecha_Contrato_Inicio']
         Fecha_Contrato_Inicio_r = datetime.strptime(fecha, "%Y-%m-%d").date()
@@ -46,6 +49,7 @@ class VistaUsuario(Resource):
         db.session.commit()
         return usuario_Schema.dump(nuevo_usuario), 201 #retorna la nueva cancion en formato json
 
+    @jwt_required()
     def put (self, Id_Usuario):
         usuario = Usuario.query.get_or_404(Id_Usuario)
         usuario.Nombre_Usu = request.json.get('Nombre_Usu', usuario.Nombre_Usu)
@@ -61,6 +65,7 @@ class VistaUsuario(Resource):
         db.session.commit()
         return usuario_Schema.dump(usuario)
 
+    @jwt_required()
     def delete(self, Id_Usuario):
         usuario = Usuario.query.get_or_404(Id_Usuario) # Obtenemos el usuario
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
