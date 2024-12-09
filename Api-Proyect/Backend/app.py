@@ -56,3 +56,15 @@ with app.app_context():
         )
         db.session.add(nuevo_usuario)
         db.session.commit()
+
+@jwt.expired_token_loader
+def expired_token_callback():
+    return {"message": "El token ha expirado. Por favor, inicie sesión nuevamente."}, 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return {"message": "Token inválido. Por favor, inicie sesión nuevamente."}, 401
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return {"message": "Falta el token. Proporcione el token en la cabecera Authorization."}, 401

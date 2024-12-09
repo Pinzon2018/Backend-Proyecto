@@ -1,17 +1,19 @@
 from flask_restful import Resource
 from flask import request
 from ..Modelos import db, Producto, ProductoSchema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 producto_schema = ProductoSchema()
 
 class VistaProducto(Resource):
     @jwt_required()
     def get(self): 
+        current_user = get_jwt_identity()
         return [producto_schema.dump(Producto) for Producto in Producto.query.all()]
 
     @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
         nuevo_producto = Producto(Nombre_Prod = request.json['Nombre_Prod'],
                                   Medida_Prod = request.json['Medida_Prod'],
                                   Unidad_Medida_Prod = request.json['Unidad_Medida_Prod'],
@@ -30,6 +32,7 @@ class VistaProducto(Resource):
     
     @jwt_required()
     def put(self, Id_Producto):
+        current_user = get_jwt_identity()
         producto = Producto.query.get(Id_Producto)
         if not producto:
             return 'Producto no encontrado', 404
@@ -52,6 +55,7 @@ class VistaProducto(Resource):
 
     @jwt_required()
     def delete(self, Id_Producto):
+        current_user = get_jwt_identity()
         producto = Producto.query.get(Id_Producto)
         if not producto:
             return 'producto no encontrado', 404

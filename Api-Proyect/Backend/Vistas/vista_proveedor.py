@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from ..Modelos import db, Proveedor, ProveedorSchema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 proveedor_schema = ProveedorSchema()
 
@@ -10,10 +10,12 @@ proveedor_schema = ProveedorSchema()
 class VistaProveedor(Resource):
     @jwt_required()
     def get(self):
+        current_user = get_jwt_identity()
         return [proveedor_schema.dump(Proveedor) for Proveedor in Proveedor.query.all()]
 
     @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
         nuevo_proveedor = Proveedor(Nombre_Prov=request.json['Nombre_Prov'],
                                     Telefono_Prov = request.json['Telefono_Prov'],
                                     Direccion_Prov = request.json['Direccion_Prov'])
@@ -23,6 +25,7 @@ class VistaProveedor(Resource):
 
     @jwt_required()
     def put(self, Id_Proveedor):
+        current_user = get_jwt_identity()
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
             return 'Proveedor no encontrado', 404
@@ -36,6 +39,7 @@ class VistaProveedor(Resource):
     
     @jwt_required()
     def delete(self, Id_Proveedor):
+        current_user = get_jwt_identity()
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
             return 'Proveedor no encontrado', 404

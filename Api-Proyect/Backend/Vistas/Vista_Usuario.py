@@ -4,7 +4,7 @@ from datetime import datetime
 from ..Modelos import db, Usuario, UsuarioSchema
 from werkzeug.security import generate_password_hash
 import cloudinary.uploader
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 usuario_Schema = UsuarioSchema()
 
@@ -12,10 +12,12 @@ usuario_Schema = UsuarioSchema()
 class VistaUsuario(Resource):
     @jwt_required()
     def get(self):
+        current_user = get_jwt_identity()
         return [usuario_Schema.dump(Usuario) for Usuario in Usuario.query.all()]
 
     @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
         fecha = request.form['Fecha_Contrato_Inicio']
         Fecha_Contrato_Inicio_r = datetime.strptime(fecha, "%Y-%m-%d").date()
         imagen_usu = None
@@ -51,6 +53,7 @@ class VistaUsuario(Resource):
 
     @jwt_required()
     def put (self, Id_Usuario):
+        current_user = get_jwt_identity()
         usuario = Usuario.query.get_or_404(Id_Usuario)
         usuario.Nombre_Usu = request.json.get('Nombre_Usu', usuario.Nombre_Usu)
         usuario.Contraseña_hash = request.json.get('Contraseña_hash', usuario.Contraseña_hash)
@@ -67,6 +70,7 @@ class VistaUsuario(Resource):
 
     @jwt_required()
     def delete(self, Id_Usuario):
+        current_user = get_jwt_identity()
         usuario = Usuario.query.get_or_404(Id_Usuario) # Obtenemos el usuario
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
         db.session.commit() # se guardan los datos
