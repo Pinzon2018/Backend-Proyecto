@@ -1,6 +1,6 @@
 from Backend import create_app
 from flask_migrate import Migrate
-from .Modelos import db, Usuario
+from .Modelos import db, Usuario, Rol
 from flask_restful import Api
 from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogin
 from flask_cors import CORS
@@ -33,7 +33,16 @@ migrate.init_app(app, db)
 
 with app.app_context():
     db.create_all()
+    
+    rol_superadmin = Rol.query.filter_by(Nombre='superadmin').first()
+    
+    if not rol_superadmin:
+        rol_superadmin = Rol(Nombre='superadmin')
+        db.session.add(rol_superadmin)
+        db.session.commit()
+
     usuario_superadmin = Usuario.query.filter_by(Nombre_Usu='admin').first()
+    
     if not usuario_superadmin:
         hashed_password = generate_password_hash('admin_password')  
         nuevo_usuario = Usuario(
@@ -43,7 +52,7 @@ with app.app_context():
             Email_Usu='admin@example.com',
             Telefono_Usu='123456789',
             Fecha_Contrato_Inicio=datetime.datetime.utcnow(),
-            rol=1 
+            rol=rol_superadmin.Id_Rol  
         )
         db.session.add(nuevo_usuario)
         db.session.commit()
