@@ -2,7 +2,7 @@ from Backend import create_app
 from flask_migrate import Migrate
 from .Modelos import db, Usuario, Rol
 from flask_restful import Api
-from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogin
+from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogin, VistaProducto
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from werkzeug.security import generate_password_hash
@@ -26,6 +26,7 @@ api.add_resource(VistaSubcategoria, '/subcategorias', '/subcategorias/<int:Id_Su
 api.add_resource(VistaUsuario, '/usuarios', '/usuarios/<int:Id_Usuario>')
 api.add_resource(VistaCategoria, '/categorias', '/categorias/<int:Id_Categoria>')
 api.add_resource(VistaLogin, '/login')
+api.add_resource(VistaProducto, '/productos', '/productos/<int:Id_Producto>')
 
 
 migrate = Migrate()

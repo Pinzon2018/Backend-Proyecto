@@ -7,9 +7,9 @@ from werkzeug.security import generate_password_hash
 
 class VistaLogin(Resource):
     def post(self):
-        Nombre_Usu = request.json.get("Nombre_Usu")
+        Email_Usu = request.json.get("Email_Usu")
         Contraseña_hash = request.json.get("Contraseña_hash")
-        usuario = Usuario.query.filter_by(Nombre_Usu=Nombre_Usu).first()
+        usuario = Usuario.query.filter_by(Email_Usu=Email_Usu).first()
         if usuario and usuario.verificar_contraseña(Contraseña_hash):
             access_token = create_access_token(identity=str(usuario.Id_Usuario))
             return {"access_token": access_token}, 200
