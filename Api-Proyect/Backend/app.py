@@ -2,17 +2,23 @@ from Backend import create_app
 from flask_migrate import Migrate
 from .Modelos import db, Usuario, Rol
 from flask_restful import Api
-from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogin, VistaProducto
+from .Vistas import VistaSubcategoria, VistaProveedor, VistaRol, VistaCategoria, VistaUsuario, VistaLogin, VistaProducto, VistaPerfil
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from werkzeug.security import generate_password_hash
 import datetime
+from flask import request
 
 app = create_app('default')
 app_context = app.app_context()
 app_context.push()
 db.init_app(app)
 db.create_all()
+
+@app.before_request
+def log_request_token():
+    auth_header = request.headers.get("Authorization", "")
+    print(f"Authorization header: {auth_header}")
 
 CORS(app)
 
@@ -27,7 +33,7 @@ api.add_resource(VistaUsuario, '/usuarios', '/usuarios/<int:Id_Usuario>')
 api.add_resource(VistaCategoria, '/categorias', '/categorias/<int:Id_Categoria>')
 api.add_resource(VistaLogin, '/login')
 api.add_resource(VistaProducto, '/productos', '/productos/<int:Id_Producto>')
-
+api.add_resource(VistaPerfil, '/perfil')
 
 migrate = Migrate()
 migrate.init_app(app, db)

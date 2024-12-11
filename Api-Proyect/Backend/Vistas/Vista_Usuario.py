@@ -75,3 +75,15 @@ class VistaUsuario(Resource):
         db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
         db.session.commit() # se guardan los datos
         return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
+    
+
+class VistaPerfil(Resource):
+    @jwt_required()
+    def get(self, Id_Usuario=None):
+        if Id_Usuario:
+            usuario = Usuario.query.get_or_404(Id_Usuario)  # Obtener el usuario por ID
+            return usuario_Schema.dump(usuario)  # Devuelve solo ese usuario
+        else:
+            return [usuario_Schema.dump(usuario) for usuario in Usuario.query.all()]
+
+    
