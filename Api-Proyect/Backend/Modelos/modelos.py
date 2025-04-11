@@ -28,8 +28,7 @@ class Usuario(db.Model):
     Cedula_Usu = db.Column(db.String(20))
     Email_Usu = db.Column(db.String(250))
     Telefono_Usu = db.Column(db.String(15))
-    imagen_usu = db.Column(db.String(255))
-    Fecha_Contrato_Inicio = db.Column(db.DateTime)
+    Fecha_Contrato_Inicio = db.Column(db.Date)
     rol = db.Column(db.Integer, db.ForeignKey('rol.Id_Rol'))
     rol_rl = db.relationship("Rol", back_populates="usuarios")
     venta_Usuario = db.relationship("Venta", back_populates="usuario")
@@ -133,6 +132,7 @@ class RolSchema(SQLAlchemyAutoSchema):  #1
         model = Rol
         include_relationships = True
         load_instance = True
+
 
 class UsuarioSchema(SQLAlchemyAutoSchema):   #2
     

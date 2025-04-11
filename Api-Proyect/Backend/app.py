@@ -46,6 +46,17 @@ with app.app_context():
     if not rol_superadmin:
         rol_superadmin = Rol(Nombre='superadmin')
         db.session.add(rol_superadmin)
+    
+    rol_admin = Rol.query.filter_by(Nombre='Administrador').first()
+    if not rol_admin:
+        rol_admin = Rol(Nombre='Administrador')
+        db.session.add(rol_admin)
+
+    rol_empleado = Rol.query.filter_by(Nombre='Empleado').first()
+    if not rol_empleado:
+        rol_empleado = Rol(Nombre='Empleado')
+        db.session.add(rol_empleado)
+
         db.session.commit()
 
     usuario_superadmin = Usuario.query.filter_by(Nombre_Usu='admin').first()
