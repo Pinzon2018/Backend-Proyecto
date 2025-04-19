@@ -136,7 +136,7 @@ class RolSchema(SQLAlchemyAutoSchema):  #1
 
 class UsuarioSchema(SQLAlchemyAutoSchema):   #2
     
-    Rol = fields.Nested(RolSchema)
+    rol_rl = fields.Nested(RolSchema)
 
     class Meta:
         model = Usuario
