@@ -63,7 +63,9 @@ class VistaUsuario(Resource):
         current_user = get_jwt_identity()
         usuario = Usuario.query.get_or_404(Id_Usuario)
         usuario.Nombre_Usu = request.json.get('Nombre_Usu', usuario.Nombre_Usu)
-        usuario.Contraseña_hash = request.json.get('Contraseña_hash', usuario.Contraseña_hash)
+        nueva_contraseña = request.json.get('Contraseña_hash', None)
+        if nueva_contraseña:
+            usuario.Contraseña_hash = generate_password_hash(nueva_contraseña)
         usuario.Email_Usu = request.json.get('Email_Usu', usuario.Email_Usu)
         usuario.Telefono_Usu = request.json.get('Telefono_Usu', usuario.Telefono_Usu)
         if 'Fecha_Contrato_Inicio' in request.json:
