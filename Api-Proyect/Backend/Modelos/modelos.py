@@ -173,7 +173,7 @@ class CategoriaSchema(SQLAlchemyAutoSchema): #6
 
 class SubcategoriaSchema(SQLAlchemyAutoSchema):  #7
     
-    Categoria = fields.Nested(CategoriaSchema)
+    categoria_rl = fields.Nested(CategoriaSchema)
 
     class Meta:
         model = Subcategoria

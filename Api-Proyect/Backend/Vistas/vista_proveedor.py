@@ -5,20 +5,24 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 proveedor_schema = ProveedorSchema()
 
-#Vista para ver y agregar Proveedores
-
 class VistaProveedor(Resource):
     @jwt_required()
-    def get(self):
+    def get(self, Id_Proveedor=None):
         current_user = get_jwt_identity()
-        return [proveedor_schema.dump(Proveedor) for Proveedor in Proveedor.query.all()]
+        if Id_Proveedor:
+            proveedor = Proveedor.query.get_or_404(Id_Proveedor)
+            return proveedor_schema.dump(proveedor)
+        else:
+            return [proveedor_schema.dump(u) for u in Proveedor.query.all()]
 
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        nuevo_proveedor = Proveedor(Nombre_Prov=request.json['Nombre_Prov'],
-                                    Telefono_Prov = request.json['Telefono_Prov'],
-                                    Direccion_Prov = request.json['Direccion_Prov'])
+        nuevo_proveedor = Proveedor(
+            Nombre_Prov=request.json['Nombre_Prov'],
+            Telefono_Prov=request.json['Telefono_Prov'],
+            Direccion_Prov=request.json['Direccion_Prov']
+        )
         db.session.add(nuevo_proveedor)
         db.session.commit()
         return proveedor_schema.dump(nuevo_proveedor)
@@ -47,4 +51,3 @@ class VistaProveedor(Resource):
         db.session.delete(proveedor)
         db.session.commit()
         return 'Proveedor Eliminado', 204
-    
