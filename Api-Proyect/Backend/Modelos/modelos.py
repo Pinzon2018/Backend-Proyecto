@@ -182,8 +182,8 @@ class SubcategoriaSchema(SQLAlchemyAutoSchema):  #7
 
 class ProductoSchema(SQLAlchemyAutoSchema):  #8
     
-    Proveedor = fields.Nested(ProveedorSchema)
-    Subcategoria = fields.Nested(SubcategoriaSchema)
+    proveedor = fields.Nested(ProveedorSchema)
+    subcategoria = fields.Nested(SubcategoriaSchema)
 
     class Meta:
         model = Producto
