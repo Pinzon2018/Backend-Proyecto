@@ -8,6 +8,21 @@ proveedor_schema = ProveedorSchema()
 class VistaProveedor(Resource):
     @jwt_required()
     def get(self, Id_Proveedor=None):
+        """
+        Obtener uno o todos los proveedores
+        ---
+        tags:
+          - Proveedores
+        parameters:
+          - name: Id_Proveedor
+            in: path
+            type: integer
+            required: false
+            description: ID del proveedor a consultar (opcional)
+        responses:
+          200:
+            description: Lista de proveedores o proveedor individual
+        """
         current_user = get_jwt_identity()
         if Id_Proveedor:
             proveedor = Proveedor.query.get_or_404(Id_Proveedor)
@@ -17,6 +32,32 @@ class VistaProveedor(Resource):
 
     @jwt_required()
     def post(self):
+        """
+        Crear un nuevo proveedor
+        ---
+        tags:
+          - Proveedores
+        parameters:
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              required:
+                - Nombre_Prov
+                - Telefono_Prov
+                - Direccion_Prov
+              properties:
+                Nombre_Prov:
+                  type: string
+                Telefono_Prov:
+                  type: string
+                Direccion_Prov:
+                  type: string
+        responses:
+          201:
+            description: Proveedor creado exitosamente
+        """
         current_user = get_jwt_identity()
         nuevo_proveedor = Proveedor(
             Nombre_Prov=request.json['Nombre_Prov'],
@@ -29,6 +70,35 @@ class VistaProveedor(Resource):
 
     @jwt_required()
     def put(self, Id_Proveedor):
+        """
+        Actualizar un proveedor
+        ---
+        tags:
+          - Proveedores
+        parameters:
+          - name: Id_Proveedor
+            in: path
+            type: integer
+            required: true
+            description: ID del proveedor
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                Nombre_Prov:
+                  type: string
+                Telefono_Prov:
+                  type: string
+                Direccion_Prov:
+                  type: string
+        responses:
+          200:
+            description: Proveedor actualizado
+          404:
+            description: Proveedor no encontrado
+        """
         current_user = get_jwt_identity()
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:
@@ -43,6 +113,23 @@ class VistaProveedor(Resource):
     
     @jwt_required()
     def delete(self, Id_Proveedor):
+        """
+        Eliminar un proveedor
+        ---
+        tags:
+          - Proveedores
+        parameters:
+          - name: Id_Proveedor
+            in: path
+            type: integer
+            required: true
+            description: ID del proveedor
+        responses:
+          204:
+            description: Proveedor eliminado
+          404:
+            description: Proveedor no encontrado
+        """
         current_user = get_jwt_identity()
         proveedor = Proveedor.query.get(Id_Proveedor)
         if not proveedor:

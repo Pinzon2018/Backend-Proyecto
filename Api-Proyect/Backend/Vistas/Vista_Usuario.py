@@ -13,6 +13,23 @@ usuario_Schema = UsuarioSchema()
 class VistaUsuario(Resource):
     @jwt_required()
     def get(self, Id_Usuario=None):
+        """
+        Obtener uno o todos los usuarios
+        ---
+        tags:
+          - Usuarios
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Usuario
+            in: path
+            required: false
+            type: integer
+            description: ID del usuario a consultar (opcional)
+        responses:
+          200:
+            description: Usuario(s) obtenidos exitosamente
+        """
         current_user = get_jwt_identity()
         if Id_Usuario:
             usuario = Usuario.query.get_or_404(Id_Usuario)
@@ -22,6 +39,51 @@ class VistaUsuario(Resource):
 
     @jwt_required()
     def post(self):
+        """
+        Crear un nuevo usuario
+        ---
+        tags:
+          - Usuarios
+        security:
+          - Bearer: []
+        parameters:
+          - in: body
+            name: usuario
+            required: true
+            schema:
+              type: object
+              required:
+                - Nombre_Usu
+                - Contraseña_hash
+                - Cedula_Usu
+                - Email_Usu
+                - Telefono_Usu
+                - Fecha_Contrato_Inicio
+                - Id_Rol
+              properties:
+                Nombre_Usu:
+                  type: string
+                Contraseña_hash:
+                  type: string
+                Cedula_Usu:
+                  type: string
+                Email_Usu:
+                  type: string
+                Telefono_Usu:
+                  type: string
+                Fecha_Contrato_Inicio:
+                  type: string
+                  format: date
+                Id_Rol:
+                  type: integer
+        responses:
+          201:
+            description: Usuario creado exitosamente
+          400:
+            description: Rol no encontrado
+          500:
+            description: Error del servidor
+        """
         current_user = get_jwt_identity()
         data = request.get_json()
         print("Datos recibidos:", data)
@@ -60,6 +122,40 @@ class VistaUsuario(Resource):
 
     @jwt_required()
     def put (self, Id_Usuario):
+        """
+        Actualizar datos de un usuario
+        ---
+        tags:
+          - Usuarios
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Usuario
+            in: path
+            required: true
+            type: integer
+          - in: body
+            name: usuario
+            schema:
+              type: object
+              properties:
+                Nombre_Usu:
+                  type: string
+                Email_Usu:
+                  type: string
+                Telefono_Usu:
+                  type: string
+                Fecha_Contrato_Inicio:
+                  type: string
+                  format: date
+                Cedula_Usu:
+                  type: string
+                rol:
+                  type: integer
+        responses:
+          200:
+            description: Usuario actualizado correctamente
+        """
         current_user = get_jwt_identity()
         usuario = Usuario.query.get_or_404(Id_Usuario)
         usuario.Nombre_Usu = request.json.get('Nombre_Usu', usuario.Nombre_Usu)
@@ -77,16 +173,43 @@ class VistaUsuario(Resource):
 
     @jwt_required()
     def delete(self, Id_Usuario):
+        """
+        Eliminar un usuario
+        ---
+        tags:
+          - Usuarios
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Usuario
+            in: path
+            required: true
+            type: integer
+        responses:
+          204:
+            description: Usuario eliminado correctamente
+        """
         current_user = get_jwt_identity()
-        usuario = Usuario.query.get_or_404(Id_Usuario) # Obtenemos el usuario
-        db.session.delete(usuario) # Se eleimina el usuario con el metodo delete
-        db.session.commit() # se guardan los datos
-        return 'Se elimino el usuario exitosamente!.',204 # Retornamos un valor
+        usuario = Usuario.query.get_or_404(Id_Usuario) 
+        db.session.delete(usuario) 
+        db.session.commit() 
+        return 'Se elimino el usuario exitosamente!.',204 
     
 
 class VistaPerfil(Resource):
     @jwt_required()
     def get(self):
+        """
+        Obtener perfil del usuario autenticado
+        ---
+        tags:
+          - Perfil
+        security:
+          - Bearer: []
+        responses:
+          200:
+            description: Datos del usuario autenticado
+        """
         current_user_id = get_jwt_identity()
         usuario = Usuario.query.get_or_404(int(current_user_id))  # asegúrate que sea int
         return usuario_Schema.dump(usuario)

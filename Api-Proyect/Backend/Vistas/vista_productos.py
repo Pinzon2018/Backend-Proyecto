@@ -8,6 +8,23 @@ producto_schema = ProductoSchema()
 class VistaProducto(Resource):
     @jwt_required()
     def get(self, Id_Producto=None):
+        """
+        Obtener todos los productos o un producto específico
+        ---
+        tags:
+          - Productos
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Producto
+            in: path
+            type: integer
+            required: false
+            description: ID del producto a obtener (opcional)
+        responses:
+          200:
+            description: Lista de productos o producto específico
+        """
         current_user = get_jwt_identity()
         if Id_Producto:
             producto = Producto.query.get_or_404(Id_Producto)
@@ -17,6 +34,58 @@ class VistaProducto(Resource):
 
     @jwt_required()
     def post(self):
+        """
+        Crear un nuevo producto
+        ---
+        tags:
+          - Productos
+        security:
+          - Bearer: []
+        parameters:
+          - in: body
+            name: producto
+            required: true
+            schema:
+              type: object
+              required:
+                - Nombre_Prod
+                - Medida_Prod
+                - Unidad_Medida_Prod
+                - Precio_Neto_Unidad_Prod
+                - Iva_Prod
+                - Porcentaje_Ganancia
+                - Unidades_Totales_Prod
+                - Estado_Prod
+                - Marca_Prod
+                - FK_Id_Proveedor
+                - FK_Id_Subcategoria
+              properties:
+                Nombre_Prod:
+                  type: string
+                Medida_Prod:
+                  type: number
+                Unidad_Medida_Prod:
+                  type: string
+                Precio_Neto_Unidad_Prod:
+                  type: number
+                Iva_Prod:
+                  type: number
+                Porcentaje_Ganancia:
+                  type: number
+                Unidades_Totales_Prod:
+                  type: integer
+                Estado_Prod:
+                  type: string
+                Marca_Prod:
+                  type: string
+                FK_Id_Proveedor:
+                  type: integer
+                FK_Id_Subcategoria:
+                  type: integer
+        responses:
+          201:
+            description: Producto creado exitosamente
+        """
         current_user = get_jwt_identity()
     
         precio_neto = float(request.json['Precio_Neto_Unidad_Prod'])
@@ -44,6 +113,54 @@ class VistaProducto(Resource):
     
     @jwt_required()
     def put(self, Id_Producto):
+        """
+        Actualizar un producto
+        ---
+        tags:
+          - Productos
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Producto
+            in: path
+            required: true
+            type: integer
+            description: ID del producto a actualizar
+          - in: body
+            name: producto
+            schema:
+              type: object
+              properties:
+                Nombre_Prod:
+                  type: string
+                Medida_Prod:
+                  type: number
+                Unidad_Medida_Prod:
+                  type: string
+                Precio_Bruto_Prod:
+                  type: number
+                Precio_Neto_Unidad_Prod:
+                  type: number
+                Iva_Prod:
+                  type: number
+                Porcentaje_Ganancia:
+                  type: number
+                Unidades_Totales_Prod:
+                  type: integer
+                Estado_Prod:
+                  type: string
+                Marca_Prod:
+                  type: string
+                FK_Id_Proveedor:
+                  type: integer
+                FK_Id_Subcategoria:
+                  type: integer
+        responses:
+          202:
+            description: Producto actualizado correctamente
+          404:
+            description: Producto no encontrado
+        """
         current_user = get_jwt_identity()
         producto = Producto.query.get(Id_Producto)
         if not producto:
@@ -67,6 +184,25 @@ class VistaProducto(Resource):
 
     @jwt_required()
     def delete(self, Id_Producto):
+        """
+        Eliminar un producto
+        ---
+        tags:
+          - Productos
+        security:
+          - Bearer: []
+        parameters:
+          - name: Id_Producto
+            in: path
+            required: true
+            type: integer
+            description: ID del producto a eliminar
+        responses:
+          204:
+            description: Producto eliminado exitosamente
+          404:
+            description: Producto no encontrado
+        """
         current_user = get_jwt_identity()
         producto = Producto.query.get(Id_Producto)
         if not producto:

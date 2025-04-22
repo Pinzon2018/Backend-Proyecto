@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 from werkzeug.security import generate_password_hash
 import datetime
 from flask import request
+from flasgger import Swagger
 
 app = create_app('default')
 app_context = app.app_context()
@@ -86,3 +87,5 @@ def invalid_token_callback(error):
 @jwt.unauthorized_loader
 def missing_token_callback(error):
     return {"message": "Falta el token. Proporcione el token en la cabecera Authorization."}, 401
+
+swagger = Swagger(app)
