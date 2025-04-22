@@ -13,3 +13,5 @@ marshmallow == 3.23.0
 marshmallow-sqlalchemy == 1.1.0
 mysql == 0.0.3
 PyMySQL == 1.1.1
+
+# pip install flasgger flask_sqlalchemy
