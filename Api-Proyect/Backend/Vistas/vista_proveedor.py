@@ -13,6 +13,8 @@ class VistaProveedor(Resource):
         ---
         tags:
           - Proveedores
+        security:
+          - Bearer: []
         parameters:
           - name: Id_Proveedor
             in: path
@@ -37,6 +39,8 @@ class VistaProveedor(Resource):
         ---
         tags:
           - Proveedores
+        security:
+          - Bearer: []
         parameters:
           - in: body
             name: body
@@ -75,6 +79,8 @@ class VistaProveedor(Resource):
         ---
         tags:
           - Proveedores
+        security:
+          - Bearer: []
         parameters:
           - name: Id_Proveedor
             in: path
@@ -118,6 +124,8 @@ class VistaProveedor(Resource):
         ---
         tags:
           - Proveedores
+        security:
+          - Bearer: []
         parameters:
           - name: Id_Proveedor
             in: path
