@@ -165,7 +165,7 @@ class Historial_Productos (db.Model):
     Producto = db.Column(db.String(100))
     Tipo_Movimiento  = db.Column(db.String(50))
     Cantidad_Prod = db.Column(db.Integer)
-    Descripcion_Movimiento = db.Column(db.String(50))
+    Descripcion_Movimiento = db.Column(db.String(100))
     Estados = db.Column(db.Boolean)
 
     usuario_HP = db.relationship("Usuario", back_populates = "HP_usuario")
@@ -314,8 +314,8 @@ class DetalleVentaSchema(SQLAlchemyAutoSchema):  #11
         load_instance = True
 
 
-class HistorialVentaSchema(SQLAlchemyAutoSchema):  #11
-    
+class HistorialVentaSchema(SQLAlchemyAutoSchema):  #12
+    #serializacion de objetos a JSON
     venta_HV = fields.Nested(VentaSchema)
     usuario_HV= fields.Nested(UsuarioSchema)
     
@@ -326,7 +326,7 @@ class HistorialVentaSchema(SQLAlchemyAutoSchema):  #11
         load_instance = True
 
 
-class HistorialProductosSchema(SQLAlchemyAutoSchema):  #11
+class HistorialProductosSchema(SQLAlchemyAutoSchema):  #13
     
     usuario_HP= fields.Nested(UsuarioSchema)
     producto_HP= fields.Nested(ProductoSchema)
@@ -337,7 +337,7 @@ class HistorialProductosSchema(SQLAlchemyAutoSchema):  #11
         include_relationships = True
         load_instance = True
 
-class HistorialGeneralSchema(SQLAlchemyAutoSchema):  #11
+class HistorialGeneralSchema(SQLAlchemyAutoSchema):  #14
     
     usuario_HG= fields.Nested(UsuarioSchema)
     HV_HG= fields.Nested(HistorialVentaSchema)
