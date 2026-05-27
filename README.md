@@ -1,1 +1,3 @@
-# Backend-Proyecto Hola Muchachos
+**Backend proyecto de inventario **
+python
+flask 
